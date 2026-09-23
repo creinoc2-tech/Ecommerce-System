@@ -20,46 +20,18 @@ export const signUp = async ({
   const { data, error } = await supabases.auth.signUp({
     email: normalizedEmail,
     password,
+    options: {
+      data: {
+        full_name: fullName,
+        phone: phone,
+      },
+    },
   });
 
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  const userId = data.user?.id;
-  if (!userId) {
-    throw new Error("Error al obtener el ID del usuario");
-  }
-
-  // Con la confirmacion de email activa, Supabase no crea una sesion todavia.
-  if (!data.session) {
-    return { ...data, requiresEmailConfirmation: true };
-  }
-
-  const { error: roleError } = await supabases.from("user_roles").insert({
-    user_id: userId,
-    role: "customer",
-  });
-
-  if (roleError) {
-    throw new Error("Error al registrar el rol del usuario");
-  }
-
-  const { error: customerError } = await supabases.from("customers").insert({
-    user_id: userId,
-    full_name: fullName,
-    phone,
-    email: normalizedEmail,
-  });
-
-  if (customerError) {
-    throw new Error("Error al registrar el cliente");
-  }
+  if (error) throw new Error(error.message);
 
   return { ...data, requiresEmailConfirmation: false };
 };
-
-
 
 export const signIn = async ({ email, password }: IAuthLogin) => {
   const { data, error } = await supabases.auth.signInWithPassword({
@@ -109,17 +81,18 @@ export const getUserData = async (userId: string) => {
   return data;
 };
 
-
 export const getUserRole = async (userId: string) => {
   const { data, error } = await supabases
-    .from('user_roles')
-    .select('role')
-    .eq('user_id', userId)
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
     .single();
 
   if (error) {
     console.log(error);
-    throw new Error('Error al obtener el rol del usuario');
+    throw new Error("Error al obtener el rol del usuario");
   }
-   return data.role
+  return data.role;
 };
+
+

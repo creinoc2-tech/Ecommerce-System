@@ -1,7 +1,8 @@
 import { Link, Navigate } from 'react-router'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRegister, useUser } from '../hook'
+import { useRegister } from '../hook'
+import { useAuth } from '../context/AuthContext'
 import { LuLoader } from 'react-icons/lu'
 import { Loader } from '../components/shared/Loader'
 import { userRegisterSchema, type UserRegisterFormValues } from '../lib/validator'
@@ -19,7 +20,7 @@ export const RegisterPage = () => {
     resolver : zodResolver(userRegisterSchema)
  })
   const { mutate , isPending } = useRegister();
-  const { session, isLoading } = useUser()
+    const { session, isLoading } = useAuth()
   
 
  const  onRegister = (data : UserRegisterFormValues) => {

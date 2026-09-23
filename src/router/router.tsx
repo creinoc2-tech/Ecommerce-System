@@ -14,6 +14,7 @@ import { DashboardNewProductsPage } from "../page/dashboard/DashboardNewProducts
 import { DashboardProductSlugPage } from "../page/dashboard/DashboardProductSlugPage";
 import { DashboardOrdersPage } from "../page/dashboard/DashboardOrdersPage";
 import { DashboardOrderPage } from "../page/dashboard/DashboardOrderPage";
+import { ProtectedRoute } from "../components/ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
@@ -46,19 +47,24 @@ export const router = createBrowserRouter([
       },
       {
         path: "account",
-        element: <ClientLayout />,
+        element: <ProtectedRoute redirectTo="/login" />,
         children: [
           {
-            path: "",
-            element: <Navigate to={"/account/pedidos"} />,
-          },
-          {
-            path: "pedidos",
-            element: <OrdersUserPage />,
-          },
-          {
-            path: "pedidos/:id",
-            element: <OrderUserPage />,
+            element: <ClientLayout />,
+            children: [
+              {
+                index: true,
+                element: <Navigate to="/account/pedidos" replace />,
+              },
+              {
+                path: "pedidos",
+                element: <OrdersUserPage />,
+              },
+              {
+                path: "pedidos/:id",
+                element: <OrderUserPage />,
+              },
+            ],
           },
         ],
       },
@@ -66,40 +72,50 @@ export const router = createBrowserRouter([
   },
   {
     path: "/checkout",
-    element: <CheckoutPage />,
-  },
-  {
-    path: "/checkout/:id/thank-you",
-    element: <ThankYouPage />,
-  },
-  {
-    path: "/dashboard",
-    element: <DashboardLayout />,
+    element: <ProtectedRoute redirectTo="/login" />,
     children: [
       {
         index: true,
-        element: <Navigate to="/dashboard/productos" />,
+        element: <CheckoutPage />,
       },
       {
-        path: "productos",
-        element: <DashboardProductsPage />,
+        path: ":id/thank-you",
+        element: <ThankYouPage />,
       },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: <ProtectedRoute redirectTo="/" role="admin" />,
+    children: [
       {
-        path: "productos/new",
-        element: <DashboardNewProductsPage />,
-      },
-
-      {
-        path: "productos/edit/:slug",
-        element: <DashboardProductSlugPage />,
-      },
-      {
-        path: "ordenes",
-        element: <DashboardOrdersPage />,
-      },
-      {
-        path: "ordenes/:id",
-        element: <DashboardOrderPage />,
+        element: <DashboardLayout />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="/dashboard/productos" replace />,
+          },
+          {
+            path: "productos",
+            element: <DashboardProductsPage />,
+          },
+          {
+            path: "productos/new",
+            element: <DashboardNewProductsPage />,
+          },
+          {
+            path: "productos/edit/:slug",
+            element: <DashboardProductSlugPage />,
+          },
+          {
+            path: "ordenes",
+            element: <DashboardOrdersPage />,
+          },
+          {
+            path: "ordenes/:id",
+            element: <DashboardOrderPage />,
+          },
+        ],
       },
     ],
   },

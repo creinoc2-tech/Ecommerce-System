@@ -1,33 +1,22 @@
-import { useEffect } from "react";
-import { Link, useNavigate, useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { useOrder } from "../hook/orders/useOrder";
 import { Loader } from "../components/shared/Loader";
 import { formatPrice } from "../helpers";
-import supabases from "../superbase/superbase";
-import { useUser } from "../hook";
+
+interface ThankYouOrderItem {
+  productImage?: string;
+  productName?: string;
+  price?: number;
+  storage?: string;
+  color_name?: string;
+}
 
 export const ThankYouPage = () => {
   const { id } = useParams<{ id: string }>();
    const { data, isLoading, isError } = useOrder(id ?? "");
-  const navigate = useNavigate();
-  const { isLoading: isUserLoading } = useUser();
-  
-   useEffect(() => {
-    const { data: authListener } = supabases.auth.onAuthStateChange(
-      (event, session) => {
-        if (event === "SIGNED_OUT" || !session) {
-          navigate("/login");
-        }
-      },
-    );
-
-    return () => authListener.subscription.unsubscribe();
-  }, [navigate]);
-
- 
   if (isError) return <div>Error al cargar la orden.</div>;
 
-  if (isLoading || !data || isUserLoading) return <Loader />;
+  if (isLoading || !data) return <Loader />;
 
   return (
     <div className="flex flex-col h-screen">
@@ -81,7 +70,7 @@ export const ThankYouPage = () => {
           <h3 className="font-medium">Detalles de la compra</h3>
           <div className="flex flex-col gap-5">
             <ul className="space-y-3">
-              {data.orderItems.map((item: any, index: number) => (
+              {data.orderItems.map((item: ThankYouOrderItem, index: number) => (
                 <li
                   key={index}
                   className="flex justify-between items-center gap-3"

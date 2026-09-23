@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { Link, Navigate } from 'react-router'
 import { useLogin } from '../hook/Auth/UseLogin'
 import { LuLoader } from 'react-icons/lu'
-import { useUser } from '../hook'
+import { useAuth } from '../context/AuthContext'
 import { Loader } from '../components/shared/Loader'
 
 export const LoginPage = () => {
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const { mutate, isPending } = useLogin();
-    const { session, isLoading } = useUser()
+    const { session, isLoading } = useAuth()
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

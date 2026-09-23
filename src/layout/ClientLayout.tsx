@@ -1,33 +1,14 @@
-import React, { useEffect } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router";
+import { NavLink, Outlet } from "react-router";
 import { signOut } from "../action";
-import { useUser } from "../hook";
-import supabases from "../superbase/superbase";
-import { Loader } from "../components/shared/Loader";
-import { useRoleUser } from "../hook/Auth/useRoleUser";
+import { useAuth } from "../context/AuthContext";
 import { HiOutlineExternalLink } from "react-icons/hi";
 
 export const ClientLayout = () => {
-  const { session, isLoading: isLoadingSession } = useUser();
-  const navigate = useNavigate();
-
-  const { data: role, isLoading: isLoadingRole } = useRoleUser(
-    session?.user.id as string,
-  );
+  const { role } = useAuth();
 
   const handleLogout = async () => {
     await signOut();
   };
-
-  useEffect(() => {
-    supabases.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_OUT" || !session) {
-        navigate("/login", { replace: true });
-      }
-    });
-  }, [navigate]);
-
-  if (isLoadingSession || isLoadingRole) return <Loader />;
 
   return (
     <div className="flex flex-col gap-5">

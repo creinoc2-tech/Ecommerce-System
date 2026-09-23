@@ -11,7 +11,7 @@ import Badge from '@mui/material/Badge'
 import { MdOutlineShoppingCart } from 'react-icons/md'
 import Button from '@mui/material/Button'
 import { useCartStore } from '../../store/cart.store'
-import { useUser } from '../../hook'
+import { useAuth } from '../../context/AuthContext'
 import { LuLoader } from 'react-icons/lu'
 import { useCustomer } from '../../hook/Auth/UseCustomer'
 
@@ -32,7 +32,7 @@ export const Navbar = () => {
   const setActiveNavMobile = useGlobalStore(state => state.setActiveNavMobile)
   
 
-  const { session , isLoading } = useUser()
+  const { session , isLoading } = useAuth()
   const userId = session?.user.id
   const { data: customer } = useCustomer(userId!)
 

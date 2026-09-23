@@ -1,28 +1,10 @@
-import { Link, useNavigate } from "react-router"
-import { useGlobalStore } from "../store/global.state"
+import { Link } from "react-router"
 import { useCartStore } from "../store/cart.store"
 import { FormCheckout } from "../components/checkout/FormCheckout"
 import { ItemsCheckout } from "../components/checkout/ItemsCheckout"
-import { useUser } from "../hook"
-import { useEffect } from "react"
-import supabases from "../superbase/superbase"
-import { Loader } from "../components/shared/Loader"
 
 export const CheckoutPage = () => {
     const  totalItems = useCartStore(state => state.totalItemsInCart)
-    const  {isLoading} = useUser()
-    const navigate = useNavigate()
-
-    useEffect(()=>{
-        supabases.auth.onAuthStateChange((event , session) => {
-             if(event === 'SIGNED_OUT'  || !session  ) {
-                 navigate('/login')
-             }
-        })
-    } , [navigate])
-
-     if(isLoading) return <Loader />
-
   return (
     <div
      style={{
