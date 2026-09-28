@@ -20,7 +20,7 @@ export const CardProduct: FC<CardProductProps> = ({ img, name, price, slug, colo
    const [activeColor, setActiveColor] = useState<{
 		name: string;
 		color: string;
-	}>(colors[0]);
+	} | undefined>(colors[0]);
 
     const addItem = useCartStore(state => state.addItem)
 
@@ -31,7 +31,7 @@ export const CardProduct: FC<CardProductProps> = ({ img, name, price, slug, colo
     const handleAddToCart = (e : React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         e.stopPropagation();
-        if(selectedVariant && selectedVariant.stock > 0){
+        if(selectedVariant && selectedVariant.stock > 0 && activeColor){
             addItem({
                 variantId : selectedVariant.id,
                 productId : slug,
