@@ -117,15 +117,18 @@ export const createOrder = async (order: OrderInput) => {
         .eq("id", item.variantId);
 
       if (updateStockError) {
-        throw new Error("No se pudo actualizar el stock");
+        throw new Error("No se pudo actualizar el stock es todo");
       }
     }
 
     return orderData;
-  } catch (error) {
-    console.log(error);
+    } catch (error) {
+    console.error(error);
+    throw error instanceof Error
+      ? error
+      : new Error("No se pudo crear la orden");
   }
-};
+}
 
 export const getOrdersByCustomerId = async () => {
   const { data, error: errorUser } = await supabases.auth.getUser();
