@@ -185,9 +185,14 @@ export const createProduct = async (productData: ProductInput) => {
 
     return product;
   } catch (error) {
-    throw new Error("Error creating  ");
+    console.error(error);
+    throw error instanceof Error
+      ? error
+      : new Error("No se pudo guardar el producto");
   }
 };
+
+
 
 export const deleteProduct = async (productId: string) => {
   const { error: variantsError } = await supabases
@@ -395,6 +400,9 @@ export const updateProduct = async (
 
     return updatedProduct;
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    throw error instanceof Error
+      ? error
+      : new Error("No se pudo guardar el producto");
   }
 };
