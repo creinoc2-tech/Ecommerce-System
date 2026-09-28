@@ -4,7 +4,7 @@ Fecha: 2026-09-28
 Alcance: frontend React + TypeScript + Vite + Supabase  
 Objetivo: errores a corregir, arquitectura objetivo para escalar, y plan de trabajo priorizado.
 
----
+* ---
 
 ## 1. Que es este proyecto
 
