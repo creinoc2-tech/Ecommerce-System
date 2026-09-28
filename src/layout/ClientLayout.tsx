@@ -11,12 +11,14 @@ export const ClientLayout = () => {
   };
 
   return (
-    <div className="flex flex-col gap-5">
-      <nav className="flex justify-center gap-10 text-sm font-medium">
+    <div className="flex flex-col gap-8">
+      <nav className="flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
         <NavLink
-          to={""}
+          to="/account/pedidos"
           className={({ isActive }) =>
-            isActive ? "underline" : "hover:underline"
+            `rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${
+              isActive ? "bg-slate-950 text-white" : "text-slate-600 hover:bg-slate-100"
+            }`
           }
         >
           Mis Pedidos
@@ -25,18 +27,21 @@ export const ClientLayout = () => {
         {role === "admin" && (
           <NavLink
             to="/dashboard/productos"
-            className="flex items-center gap-1 hover:underline"
+            className="flex items-center gap-1 rounded-xl px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100"
           >
             Dashboard
-            <HiOutlineExternalLink size={16} className="inline-block" />
+            <HiOutlineExternalLink size={16} />
           </NavLink>
         )}
-        <button className="hover:underline" onClick={handleLogout}>
-          Cerrar sesión
+        <button
+          className="rounded-xl px-4 py-2 text-sm font-semibold text-rose-600 transition-colors hover:bg-rose-50"
+          onClick={handleLogout}
+        >
+          Cerrar sesion
         </button>
       </nav>
 
-      <main className="container mt-12 flex-1">
+      <main className="flex-1">
         <Outlet />
       </main>
     </div>

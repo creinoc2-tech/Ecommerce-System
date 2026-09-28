@@ -24,8 +24,13 @@ export const CardProduct: FC<CardProductProps> = ({ img, name, price, slug, colo
 
     const addItem = useCartStore(state => state.addItem)
 
+    const selectedVariant = variants.find((variant) =>
+       variant.color === activeColor?.color
+    );
+
     const handleAddToCart = (e : React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        e.stopPropagation();
         if(selectedVariant && selectedVariant.stock > 0){
             addItem({
                 variantId : selectedVariant.id,
@@ -47,54 +52,45 @@ export const CardProduct: FC<CardProductProps> = ({ img, name, price, slug, colo
         }
     }
 
-
-   const selectedVariant = variants.find((variant) =>
-       variant.color === activeColor.color
-   );
-
    const stock = selectedVariant?.stock || 0;
- 
+  
     return (
-    <div className="flex flex-col  gap-6 relative ">
-        <Link to={`/products/${slug}`} className="flex relative group overflow-hidden ">
-          <div className="flex h-[350px] w-full items-center justify-center py-2 lg:h-[250px]">
-            <img src={img} alt={name} className="object-container h-full w-full " />
+    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+        <Link to={`/products/${slug}`} className="relative overflow-hidden bg-slate-50">
+          <div className="flex h-[260px] w-full items-center justify-center p-6 lg:h-[240px]">
+            <img src={img} alt={name} className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105" />
           </div>
 
-          <button className='bg-white border border-slate-200 absolute w-full bottom-0 py-3 rounded-3xl flex items-center justify-center gap-1 text-sm font-medium hover:bg-stone-100 translate-y-[100%] 
-          transition-all duration-300 group-hover:translate-y-0'
-          
-           onClick={handleAddToCart}>
+          <button
+            type="button"
+            className="absolute inset-x-4 bottom-4 flex items-center justify-center gap-1 rounded-full bg-slate-950 py-2.5 text-sm font-semibold text-white opacity-100 translate-y-0 shadow-lg transition-all duration-300 hover:bg-cyan-700 md:translate-y-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100"
+            onClick={handleAddToCart}
+          >
             <FiPlus />
 			Añadir
-
-
           </button>
         </Link>
-        <div className="flex flex-col gap-1 items-center">
-            <p className="text-[15px] font-medium"> {name} </p>
-            <p className="text-[15px] font-medium"> {formatPrice(price)} </p>
+        <div className="flex flex-col items-center gap-1.5 px-4 pb-5 pt-4">
+            <p className="text-center text-sm font-semibold text-slate-900">{name}</p>
+            <p className="text-sm font-bold text-cyan-700">{formatPrice(price)}</p>
 
-            <div className="flex gap-3">
-                {
-                    colors.map( (color) => (
-                        <span key={color.color}
-                        className={`grid place-items-center w-5 h-5  rounded-full cursor-pointer 
-                             ${activeColor.color === color.color ? 'border border-black' : ' '}`}
-                        onClick={() => setActiveColor(color)}
-                        >
-                            <span className="w-[14px] h-[14px] rounded-full"
-                             style={{ backgroundColor: color.color }}  />
-                        </span>
-                    ))
-                }
-            
+            <div className="mt-1 flex gap-2">
+                {colors.map((color) => (
+                    <button
+                      type="button"
+                      key={color.color}
+                      aria-label={color.name}
+                      className={`grid h-5 w-5 place-items-center rounded-full ${activeColor?.color === color.color ? 'ring-2 ring-slate-900 ring-offset-1' : ''}`}
+                      onClick={() => setActiveColor(color)}
+                    >
+                        <span className="h-3.5 w-3.5 rounded-full border border-black/10" style={{ backgroundColor: color.color }} />
+                    </button>
+                ))}
             </div>
         </div>
-        <div className="absolute top-2 left-2">
+        <div className="absolute left-3 top-3">
             {stock === 0 &&  <Tag contentTag="agotado" />}
         </div>
-
-    </div>
+    </article>
   )
 }

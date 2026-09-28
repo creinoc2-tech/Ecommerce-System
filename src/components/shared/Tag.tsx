@@ -7,17 +7,14 @@ interface Props {
 }
 
  const getTagColor = (content : TagType) => {
-    const lowerContent = content.toLowerCase();
-    if (lowerContent === 'nuevo') return 'bg-blue-500';
-    if (lowerContent === 'agotado') return 'bg-black';
-
-    return 'bg-gray-500';
+    if (content === 'nuevo') return 'bg-cyan-600';
+    if (content === 'agotado') return 'bg-slate-950';
+    return 'bg-slate-500';
  }
 export const Tag: FC<Props> = ({ contentTag }) => {
   return (
-    <div className={`text-white w-fit px-2 ${getTagColor(contentTag)}`}>
-       <p className="uppercase  text-xs font-medium"
-       >{contentTag}</p>
+    <div className={`w-fit rounded-full px-2.5 py-1 text-white shadow-sm ${getTagColor(contentTag)}`}>
+       <p className="text-[10px] font-semibold uppercase tracking-wider">{contentTag}</p>
     </div>
   )
 }

@@ -1,122 +1,127 @@
-import React from 'react'
 import { navbarLinks } from '../../constans/links'
 import { Link, NavLink } from 'react-router'
-import { HiOutlineSearch, HiOutlineShoppingBag, HiOutlineUser } from 'react-icons/hi'
+import { HiOutlineSearch, HiOutlineUser } from 'react-icons/hi'
 import { FaBarsStaggered } from 'react-icons/fa6'
 import { Logo } from './Logo'
 import { useGlobalStore } from '../../store/global.state'
-import type { BadgeProps } from '@mui/material/Badge';import { styled } from '@mui/material/styles';
-import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge'
 import { MdOutlineShoppingCart } from 'react-icons/md'
-import Button from '@mui/material/Button'
 import { useCartStore } from '../../store/cart.store'
 import { useAuth } from '../../context/AuthContext'
 import { LuLoader } from 'react-icons/lu'
 import { useCustomer } from '../../hook/Auth/UseCustomer'
 
-const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
-  '& .MuiBadge-badge': {
-    right: -3,
-    top: 13,
-    border: `2px solid ${(theme.vars ?? theme).palette.background.paper}`,
-    padding: '0 4px',
-  },
-}));
-
-
 export const Navbar = () => {
-
   const totalItemsInCart = useCartStore(state => state.totalItemsInCart)
   const openSheet = useGlobalStore(state => state.openSheet)
   const setActiveNavMobile = useGlobalStore(state => state.setActiveNavMobile)
-  
 
-  const { session , isLoading } = useAuth()
+  const { session, isLoading } = useAuth()
   const userId = session?.user.id
   const { data: customer } = useCustomer(userId!)
 
   const iniciales = customer?.full_name
-  ?.split(" ")
-  .map((palabra : any ) => palabra.charAt(0).toUpperCase())
-  .join("");
+    ?.split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((palabra: string) => palabra.charAt(0).toUpperCase())
+    .join("");
 
-   return (
-
-
-      	<header className='bg-white text-black py-4 flex items-center 
-        justify-between px-5 border-b border-slate-200 lg:px-12'>
-
+  return (
+    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
+      <div className="mx-auto flex max-w-screen-xl items-center justify-between gap-4 px-4 py-3 lg:px-8">
         <Logo />
 
-       
+        <nav className="hidden items-center gap-1 md:flex">
+          {navbarLinks.map((item) => (
+            <NavLink
+              key={item.id}
+              to={item.path}
+              className={({ isActive }) =>
+                `rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
+                  isActive
+                    ? 'bg-cyan-50 text-cyan-700'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'
+                }`
+              }
+            >
+              {item.title}
+            </NavLink>
+          ))}
+        </nav>
 
-        
-       <div className='flex gap-6 items-center'>
-         <ul className='flex items-center gap-3'>
-          <li className='list-none '>
-             <Link className='text-[16px] text-slate-700 font-medium '
-             to="/login">Login   </Link>  | &nbsp;
-             <Link className='text-[16px] text-slate-700 font-medium ' to="/register">Register</Link>
-          </li>
-            
+        <div className="flex items-center gap-1">
+          {!session && !isLoading && (
+            <div className="hidden items-center gap-2 sm:flex">
+              <Link
+                to="/login"
+                className="rounded-full px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:text-slate-950"
+              >
+                Iniciar sesion
+              </Link>
+              <Link
+                to="/register"
+                className="btn-primary !py-2 !px-4 !text-xs tracking-wide"
+              >
+                Crear cuenta
+              </Link>
+            </div>
+          )}
 
-         </ul>
+          <button
+            type="button"
+            aria-label="Buscar productos"
+            onClick={() => openSheet("search")}
+            className="grid h-10 w-10 place-items-center rounded-full text-slate-700 transition-colors hover:bg-slate-100"
+          >
+            <HiOutlineSearch size={20} />
+          </button>
 
-
-         <div className='flex gap-2 items-center'>
-
-          <IconButton aria-label="cart"  onClick={ () => openSheet("search")}>
-           <StyledBadge >
-           <HiOutlineSearch  size={24}/>
-           </StyledBadge>
-           </IconButton>
-
-
-
-           {
-             isLoading ? (
-                <LuLoader  className='animate-spin' size={60}/>
-
-             ):  session ? (
-              <div className='relative'>
-            <Link to="/account"
-            className='border-2 border-gray-600 w-8 h-8 rounded-full grid place-items-center text-lg font-bold'>
-                <p className='text-gray-500'>{iniciales?? ""}</p>
+          {isLoading ? (
+            <span className="grid h-10 w-10 place-items-center">
+              <LuLoader className="animate-spin text-cyan-600" size={20} />
+            </span>
+          ) : session ? (
+            <Link
+              to="/account"
+              aria-label="Mi cuenta"
+              className="grid h-9 w-9 place-items-center rounded-full bg-slate-950 text-[11px] font-bold text-white transition-transform hover:scale-105"
+            >
+              {iniciales || <HiOutlineUser size={16} />}
             </Link>
-           </div>
+          ) : (
+            <Link
+              to="/login"
+              aria-label="Iniciar sesion"
+              className="grid h-10 w-10 place-items-center rounded-full text-slate-700 transition-colors hover:bg-slate-100 sm:hidden"
+            >
+              <HiOutlineUser size={20} />
+            </Link>
+          )}
 
-             ) : (
-                <Link to={"/login"} >
-                   <HiOutlineUser size={25}/>
+          <button
+            type="button"
+            aria-label="Abrir carrito"
+            onClick={() => openSheet("cart")}
+            className="relative grid h-10 w-10 place-items-center rounded-full text-slate-700 transition-colors hover:bg-slate-100"
+          >
+            <MdOutlineShoppingCart size={22} />
+            {totalItemsInCart > 0 && (
+              <span className="absolute right-1 top-1 grid h-4 min-w-4 place-items-center rounded-full bg-cyan-600 px-1 text-[10px] font-bold text-white">
+                {totalItemsInCart}
+              </span>
+            )}
+          </button>
 
-                </Link>
-
-             )
-           }
-
-           <IconButton aria-label="cart" onClick={() => openSheet("cart")}>
-           <StyledBadge badgeContent={totalItemsInCart} 
-           sx={{ '& .MuiBadge-badge': { backgroundColor: '#ff8a80', color: '#fff' } }}
-           >
-           <MdOutlineShoppingCart  size={25}/>
-           </StyledBadge>
-           </IconButton>
-
-
-
-         </div>
-         
-       </div>
-
-
-
-
-       <button className='md:hidden ' 
-       onClick={() => setActiveNavMobile(true)}>
-				<FaBarsStaggered size={10} />
-			</button>
-
-       </header>
+          <button
+            type="button"
+            aria-label="Abrir menu"
+            className="grid h-10 w-10 place-items-center rounded-full text-slate-700 transition-colors hover:bg-slate-100 md:hidden"
+            onClick={() => setActiveNavMobile(true)}
+          >
+            <FaBarsStaggered size={16} />
+          </button>
+        </div>
+      </div>
+    </header>
   )
 }

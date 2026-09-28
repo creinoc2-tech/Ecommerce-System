@@ -1,57 +1,48 @@
-import React from 'react'
 import { BiWorld } from 'react-icons/bi'
 import { FaHammer } from 'react-icons/fa6'
 import { HiMiniReceiptRefund } from 'react-icons/hi2'
 import { MdLocalShipping } from 'react-icons/md'
 
+const features = [
+  {
+    icon: MdLocalShipping,
+    title: 'Envio gratis',
+    description: 'En todos nuestros productos',
+  },
+  {
+    icon: HiMiniReceiptRefund,
+    title: 'Devoluciones',
+    description: '72 horas si no te satisface la compra',
+  },
+  {
+    icon: FaHammer,
+    title: 'Soporte 24/7',
+    description: 'Asistencia tecnica cuando la necesites',
+  },
+  {
+    icon: BiWorld,
+    title: 'Garantia',
+    description: '1 ano en todos los equipos',
+  },
+]
+
 export const FeatureGrid = () => {
   return (
-    <div className='grid grid-cols-2 gap-8 mt-6 mb-16 lg:grid-cols-4 lg:gap-5'>
-
-        <div className='flex items-center gap-6'>
-				<MdLocalShipping size={40} className='text-slate-600' />
-
-				<div className='space-y-1'>
-					<p className='font-semibold'>Envío gratis</p>
-					<p className='text-sm'>En todos nuestros productos</p>
-				</div>
-			</div>
-
-			<div className='flex items-center gap-6'>
-				<HiMiniReceiptRefund size={40} className='text-slate-600' />
-
-				<div className='space-y-1'>
-					<p className='font-semibold'>Devoluciones</p>
-					<p className='text-sm'>
-						Devuelve el equipo si no te satisface la compra dentro de
-						72 horas
-					</p>
-				</div>
-			</div>
-
-			<div className='flex items-center gap-6'>
-				<FaHammer size={40} className='text-slate-600' />
-
-				<div className='space-y-1'>
-					<p className='font-semibold'>Soporte 24/7</p>
-					<p className='text-sm'>
-						Soporte técnico en cualquier momento
-					</p>
-				</div>
-			</div>
-
-			<div className='flex items-center gap-6'>
-				<BiWorld size={40} className='text-slate-600' />
-
-				<div className='space-y-1'>
-					<p className='font-semibold'>Garantía</p>
-					<p className='text-sm'>
-						Garantía de 1 año en todos los equipos
-					</p>
-				</div>
-			</div>
-
-
+    <div className="mb-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {features.map(({ icon: Icon, title, description }) => (
+        <div
+          key={title}
+          className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-cyan-50 text-cyan-700">
+            <Icon size={22} />
+          </span>
+          <div className="space-y-1">
+            <p className="font-semibold text-slate-900">{title}</p>
+            <p className="text-sm text-slate-500">{description}</p>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

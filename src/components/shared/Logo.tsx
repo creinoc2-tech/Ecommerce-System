@@ -1,25 +1,31 @@
-import React, { type FC } from 'react'
+import type { FC } from 'react'
 import { Link } from 'react-router'
-import logoImage from '../../../public/img/brands/1750047766437_logo.jpg';
 
-interface props {
+interface Props {
   isDashboard?: boolean
+  light?: boolean
 }
-export const Logo : FC<props> = ({ isDashboard }) => {
+
+export const Logo: FC<Props> = ({ isDashboard, light }) => {
+  const textClass = light ? 'text-white' : 'text-slate-950'
 
   return (
-    <Link to="/"
-     className={`text-2xl font-bold tracking-tighter transition-all ${isDashboard && "hover-scale-105"} `}>
-        <p className='hidden lg:block  items-center'>
-            Productos  
-            <span className='text-cyan-600'> Baratos</span>
-        </p>
-
-        <p className='flex text-4xl lg:hidden'>
-            <span className='-skew-x-6 '>C</span>
-            <span className='text-cyan-600 skew-x-6'>B</span>
-        </p>
-
+    <Link
+      to={isDashboard ? '/dashboard' : '/'}
+      className={`group inline-flex items-center gap-2.5 ${textClass}`}
+    >
+      <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-700 text-white shadow-md shadow-cyan-600/30 transition-transform duration-200 group-hover:scale-105">
+        <span className="text-sm font-extrabold tracking-tight">CB</span>
+      </span>
+      <span className="hidden leading-none lg:block">
+        <span className="block text-lg font-extrabold tracking-tight">
+          Celulares
+          <span className={light ? 'text-cyan-300' : 'text-cyan-600'}> Baratos</span>
+        </span>
+        <span className={`text-[10px] font-medium uppercase tracking-[0.18em] ${light ? 'text-slate-300' : 'text-slate-400'}`}>
+          Tech Store
+        </span>
+      </span>
     </Link>
   )
 }

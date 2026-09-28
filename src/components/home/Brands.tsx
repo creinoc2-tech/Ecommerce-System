@@ -1,27 +1,22 @@
 import { brands } from "../../constans/links"
 
-
-
-
 export const Brands = () => {
   return (
-    <div className='flex flex-col items-center gap-3 pt-6 pb-12'>
-        <h2 className="font-bold text-2xl">Marca que disponemos </h2>
-
-        <p className='w-2/3 text-center text-sm md:text-base'>
-            Contamos con una amplia variedad de marcas reconocidas en el mercado, 
-            garantizando calidad y confianza en cada producto que ofrecemos.
+    <section className="flex flex-col items-center gap-4 rounded-3xl border border-slate-200 bg-white px-6 py-12">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-700">Marcas</p>
+        <h2 className="text-center text-2xl font-extrabold tracking-tight text-slate-950 md:text-3xl">
+          Marcas que disponemos
+        </h2>
+        <p className="max-w-2xl text-center text-sm text-slate-500 md:text-base">
+            Amplia variedad de marcas reconocidas, con calidad y confianza en cada equipo.
         </p>
-        <div className='grid grid-cols-3  gap-6 mt-8 items-center md:grid-cols-6'>
-            {
-                brands.map( (brand, index) => (
-                    <div key={index} >
-                        <img src={brand.image} alt={brand.alt}  />
-                    </div>
-                ))
-            }
-
+        <div className="mt-6 grid w-full grid-cols-2 items-center gap-6 sm:grid-cols-3 md:grid-cols-6">
+            {brands.map((brand) => (
+                <div key={brand.alt} className="grid h-16 place-items-center rounded-2xl bg-slate-50 p-3">
+                    <img src={brand.image} alt={brand.alt} className="max-h-10 w-auto object-contain grayscale transition hover:grayscale-0" />
+                </div>
+            ))}
         </div>
-    </div>
+    </section>
   )
 }

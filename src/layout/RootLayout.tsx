@@ -12,26 +12,16 @@ export const RootLayout = () => {
     const isSheetOpen = useGlobalStore(state => state.isSheetOpen)
     const activeNavMobile = useGlobalStore(state => state.activeNavMobile)
   return (
-    <div className="  h-screen flex flex-col">
-
-
+    <div className="flex min-h-screen flex-col bg-slate-50">
         <Navbar />
-
-         { pathname === '/' &&   (<Banner />)}
-        <main className="mx-auto p-4 w-full max-w-screen-xl my-8 flex-1">
+        {pathname === '/' && <Banner />}
+        <main className="mx-auto w-full max-w-screen-xl flex-1 px-4 py-8 lg:px-8">
             <Outlet />
         </main>
-         { pathname === '/' &&(<Newsletter />)}
-
-          {isSheetOpen &&  <Sheet/>}
-
-
-          {
-            activeNavMobile && <NavBarMobile />
-          }
+        {pathname === '/' && <Newsletter />}
+        {isSheetOpen && <Sheet />}
+        {activeNavMobile && <NavBarMobile />}
         <Footer />
-
-       
     </div>
   )
 }

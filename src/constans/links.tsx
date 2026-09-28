@@ -6,24 +6,23 @@ import {
 	FaTiktok,
 	FaXTwitter,
 } from 'react-icons/fa6';
-import type { href } from 'react-router';
 
 export const navbarLinks = [
   {
     id: 1,
-    title: "Home",
+    title: "Inicio",
     path: "/"
   },
   {
     id: 2,
-    title: "About",
-    path: "/about"
+    title: "Productos",
+    path: "/products"
   },
   {
     id: 3,
-    title: "Productos",
-    path: "/products"
-  } 
+    title: "Nosotros",
+    path: "/about"
+  }
 ]
 
 export const socialLinks = [
@@ -86,13 +85,13 @@ export const dashboardLinks = [
 		id: 1,
 		title: 'Productos',
 		href: '/dashboard/productos',
-		icon : <FaBoxOpen size={25} />
+		icon : <FaBoxOpen size={22} />
 	 } ,
 
 	 {
 		id: 2,
 		title: 'Ordenes',
 		href: '/dashboard/ordenes',
-		icon : <FaCartShopping size={25} />
+		icon : <FaCartShopping size={22} />
 	 }
 ]
