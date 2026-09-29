@@ -24,7 +24,6 @@ export const TableOrdersAdmin = ({ orders }: Props) => {
 
 	const handleStatusChange = (id: number, status: string) => {
 		mutate({ id, status });
-        console.log("hola mundo")
 	};
 
 	return (

@@ -6,7 +6,6 @@ export const DashboardOrdersPage = () => {
 	const { data, isLoading } = useAllOrders();
 
 	if (isLoading || !data) return <Loader />;
-    console.log(data)
 
 	return (
 		<div className='space-y-5'>

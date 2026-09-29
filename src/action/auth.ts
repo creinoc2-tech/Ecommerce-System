@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import supabases from "../superbase/superbase";
 
 interface IAuthLogin {
@@ -46,14 +47,11 @@ export const signIn = async ({ email, password }: IAuthLogin) => {
 };
 
 export const signOut = async () => {
-  try {
-    const { error } = await supabases.auth.signOut();
-    if (error) {
-      console.log(error);
-      throw new Error("Error al cerrar sesión");
-    }
-  } catch (error) {
-    console.log(error);
+  const { error } = await supabases.auth.signOut();
+  if (error) {
+    console.error(error);
+    toast.error("No se pudo cerrar la sesion");
+    throw new Error("Error al cerrar sesión");
   }
 };
 
@@ -74,7 +72,6 @@ export const getUserData = async (userId: string) => {
     .single();
 
   if (error) {
-    console.log(error);
     throw new Error("Error al obtener los datos del usuario");
   }
 
@@ -89,7 +86,6 @@ export const getUserRole = async (userId: string) => {
     .single();
 
   if (error) {
-    console.log(error);
     throw new Error("Error al obtener el rol del usuario");
   }
   return data.role;

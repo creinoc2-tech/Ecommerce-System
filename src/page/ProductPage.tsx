@@ -81,40 +81,51 @@ useEffect(()=>{
 
 
 
-const isOutOfStock = selectedVariant?.stock === 0;
+const availableStock = selectedVariant?.stock ?? 0;
+const isOutOfStock = availableStock <= 0;
 
 const addToCart = () => {
-    if(selectedVariant ){
-        additem({
-            variantId : selectedVariant.id,
-            productId : product?.id || '',
-            name : product?.name || '',
-            image : product?.images[0] || '',
-            color : selectedVariant.color_name,
-            storage : selectedVariant.storage || '',
-            price : selectedVariant.price || 0,
-            quantity : count
-        });
-        toast.success("Producto agregado al carrito");
+    if(!selectedVariant || availableStock <= 0){
+        toast.error("Producto agotado");
+        return;
     }
+    if(count > availableStock){
+        toast.error(`Solo hay ${availableStock} unidades disponibles`);
+        return;
+    }
+    additem({
+        variantId : selectedVariant.id,
+        productId : product?.id || '',
+        name : product?.name || '',
+        image : product?.images[0] || '',
+        color : selectedVariant.color_name,
+        storage : selectedVariant.storage || '',
+        price : selectedVariant.price || 0,
+        quantity : count
+    });
+    toast.success("Producto agregado al carrito");
 }
 
 const buyNow = () => {
-  if(selectedVariant ){
-        additem({
-            variantId : selectedVariant.id,
-            productId : product?.id || '',
-            name : product?.name || '',
-            image : product?.images[0] || '',
-            color : selectedVariant.color_name,
-            storage : selectedVariant.storage || '',
-            price : selectedVariant.price || 0,
-            quantity : count
-        });
-        navigate('/checkout');
-    }
-
-
+  if(!selectedVariant || availableStock <= 0){
+        toast.error("Producto agotado");
+        return;
+  }
+  if(count > availableStock){
+        toast.error(`Solo hay ${availableStock} unidades disponibles`);
+        return;
+  }
+  additem({
+      variantId : selectedVariant.id,
+      productId : product?.id || '',
+      name : product?.name || '',
+      image : product?.images[0] || '',
+      color : selectedVariant.color_name,
+      storage : selectedVariant.storage || '',
+      price : selectedVariant.price || 0,
+      quantity : count
+  });
+  navigate('/checkout');
 }
 useEffect(() => {
     setCurrentSlug(slug);
@@ -192,7 +203,7 @@ if(!product || isError) return (
 
              <div className='flex flex-col gap-3'>
                 <p className='text-xs font-medium'>
-                    Almacenamiento disponible: 256GB
+                    Almacenamiento disponible: {selectedStorage || '—'}
                 </p>
                 
                 {
@@ -242,7 +253,8 @@ if(!product || isError) return (
                            </button>
                             <span className='text-slate-500 text-sm'>{count}</span>
                             <button
-                                onClick={() => setCount((prev) => prev + 1)}
+                                onClick={() => setCount((prev) => Math.min(availableStock, prev + 1))}
+                                disabled={count >= availableStock}
                             >
                                 <LuPlus size={15} />
                             </button>
@@ -251,15 +263,17 @@ if(!product || isError) return (
 
                         <div className="flex flex-col gap-3">
                             <button onClick={addToCart}
+                             disabled={isOutOfStock || count > availableStock}
                              className='bg-[#f3f3f3] uppercase font-semibold tracking-widest text-xs py-4
-                             rounded-full transition-all duration-300 hover:bg-[#e2e2e2] '
+                             rounded-full transition-all duration-300 hover:bg-[#e2e2e2] disabled:opacity-50 disabled:cursor-not-allowed'
                             >
                                 Añadir al carrito
                             </button>
 
                             <button onClick={buyNow}
+                            disabled={isOutOfStock || count > availableStock}
                             className='bg-black text-white uppercase font-semibold tracking-widest
-                             text-xs py-4 rounded-full'
+                             text-xs py-4 rounded-full disabled:opacity-50 disabled:cursor-not-allowed'
                             >
                                 Comprar ahora
                             </button>

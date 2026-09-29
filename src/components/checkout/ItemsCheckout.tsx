@@ -27,7 +27,7 @@ export const ItemsCheckout = () => {
                   <div className="flex justify-between">
                     <p className="font-semibold">{items.name}</p>
                     <p className="text-sm font-medium text-gray-600 mt-1"
-                    >${formatPrice(items.price)}</p>
+                    >{formatPrice(items.price)}</p>
                   </div>
                   <div className="flex gap-3">
                     <p className="text-[13px] text-gray-600">
@@ -52,7 +52,7 @@ export const ItemsCheckout = () => {
           <div className="flex justify-between font-semibold text-lg">
             <p className="text-sm font-medium">Total:</p>
             <p className="text-sm font-medium">
-              ${formatPrice(totalAmount)}</p>
+              {formatPrice(totalAmount)}</p>
           </div>
         </div>
     </div>
