@@ -15,11 +15,13 @@ import { DashboardProductSlugPage } from "../page/dashboard/DashboardProductSlug
 import { DashboardOrdersPage } from "../page/dashboard/DashboardOrdersPage";
 import { DashboardOrderPage } from "../page/dashboard/DashboardOrderPage";
 import { ProtectedRoute } from "../components/ProtectedRoute";
+import { NotFoundPage } from "../page/NotFoundPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
+    errorElement: <NotFoundPage />,
     children: [
       {
         index: true,
@@ -119,5 +121,8 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  
+  {
+    path: "*",
+    element: <NotFoundPage />,
+  },
 ]);
