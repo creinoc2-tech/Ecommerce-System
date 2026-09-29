@@ -7,7 +7,11 @@ export const ClientLayout = () => {
   const { role } = useAuth();
 
   const handleLogout = async () => {
-    await signOut();
+    try {
+      await signOut();
+    } catch {
+      return;
+    }
   };
 
   return (

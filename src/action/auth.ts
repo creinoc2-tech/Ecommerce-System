@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import supabases from "../superbase/superbase";
 
 interface IAuthLogin {
@@ -46,12 +47,11 @@ export const signIn = async ({ email, password }: IAuthLogin) => {
 };
 
 export const signOut = async () => {
-  try {
-    const { error } = await supabases.auth.signOut();
-    if (error) {
-      throw new Error("Error al cerrar sesión");
-    }
-  } catch (error) {
+  const { error } = await supabases.auth.signOut();
+  if (error) {
+    console.error(error);
+    toast.error("No se pudo cerrar la sesion");
+    throw new Error("Error al cerrar sesión");
   }
 };
 

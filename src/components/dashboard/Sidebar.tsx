@@ -8,7 +8,11 @@ import { Logo } from '../shared/Logo'
 export const Sidebar = () => {
 
   const handleLogout = async () => {
-    await signOut()
+    try {
+      await signOut()
+    } catch {
+      return
+    }
   }
   return (
     <div className='w-[120] bg-stone-500 text-white flex flex-col gap-10 items-center p-5 
