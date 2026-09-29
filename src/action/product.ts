@@ -146,10 +146,9 @@ export const createProduct = async (productData: ProductInput) => {
           .upload(`${folderName}/${product.id}-${image.name}`, image);
 
         if (error) throw new Error(error.message);
-        const imageUrl = ` ${
+        const imageUrl =
           supabases.storage.from("product-images").getPublicUrl(data.path).data
-            .publicUrl
-        }`;
+            .publicUrl;
 
         return imageUrl;
       }),
