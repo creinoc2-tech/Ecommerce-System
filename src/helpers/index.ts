@@ -40,8 +40,8 @@ export const prepareProducts = (products: Product[]) => {
 			[]
 		);
 
-		// Obtener el precio más bajo de las variantes agrupadas
-		const price = Math.min(...colors.map(item => item.price));
+		const colorPrices = colors.map(item => item.price);
+		const price = colorPrices.length > 0 ? Math.min(...colorPrices) : 0;
 
 		// Devolver el producto formateado
 		return {

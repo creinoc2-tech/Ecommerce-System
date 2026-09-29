@@ -48,6 +48,7 @@ export const ProductsPage = () => {
             preparedProducts.map( (product) => (
               <CardProduct
                key={product.id}
+               id={product.id}
                img={product.images[0]}
                name={product.name}
                 price={product.price}

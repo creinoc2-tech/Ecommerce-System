@@ -1,7 +1,7 @@
 import { IoChevronBack } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router";
 import { Loader } from "../../components/shared/Loader";
-import { formatPrice } from "../../helpers";
+import { formatDateLong, formatPrice } from "../../helpers";
 import { useOrderAdmin } from "../../hook/orders/useOrderAdmin";
 
 const tableHeaders = ["Producto", "Cantidad", "Total"];
@@ -31,7 +31,7 @@ export const DashboardOrderPage = () => {
 
         <div className="flex flex-col items-center gap-1.5">
           <h1 className="text-3xl font-bold">Pedido #{id}</h1>
-          <p className="text-sm"> FECHA</p>
+          <p className="text-sm">{formatDateLong(order.createdAt)}</p>
         </div>
         <div />
         <div />
@@ -99,7 +99,7 @@ export const DashboardOrderPage = () => {
           <div className="border border-stone-300 p-5 flex flex-col gap-5">
             <div className="space-y-1">
               <h3 className="font-medium">Cliente:</h3>
-              <p>{order.customer.full_name}</p>
+              <p>{order.customer.fullname}</p>
             </div>
 
             <div className="flex flex-col gap-1 text-sm">

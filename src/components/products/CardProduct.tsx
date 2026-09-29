@@ -1,4 +1,4 @@
-import { useState, type FC } from "react";
+import { useMemo, useState, type FC } from "react";
 import { FiPlus } from "react-icons/fi";
 import { Link } from "react-router";
 import type { VariantProduct } from "../../interfaces";
@@ -8,6 +8,7 @@ import { useCartStore } from "../../store/cart.store";
 import toast from "react-hot-toast";
 
 interface CardProductProps {
+	id: string;
 	img: string;
 	name: string;
 	price: number;
@@ -16,25 +17,48 @@ interface CardProductProps {
 	variants: VariantProduct[];
 }
 
-export const CardProduct: FC<CardProductProps> = ({ img, name, price, slug, colors, variants }) => {
+export const CardProduct: FC<CardProductProps> = ({ id, img, name, price, slug, colors, variants }) => {
    const [activeColor, setActiveColor] = useState<{
 		name: string;
 		color: string;
-	}>(colors[0]);
+	} | undefined>(colors[0]);
+
+    const storagesForColor = useMemo(() => {
+        if (!activeColor) return [];
+        return [...new Set(
+            variants
+                .filter((variant) => variant.color === activeColor.color)
+                .map((variant) => variant.storage)
+        )];
+    }, [activeColor, variants]);
+
+    const [selectedStorage, setSelectedStorage] = useState<string | undefined>(
+        storagesForColor[0]
+    );
+
+    const handleColorChange = (color: { name: string; color: string }) => {
+        setActiveColor(color);
+        const nextStorages = [...new Set(
+            variants
+                .filter((variant) => variant.color === color.color)
+                .map((variant) => variant.storage)
+        )];
+        setSelectedStorage(nextStorages[0]);
+    };
 
     const addItem = useCartStore(state => state.addItem)
 
     const selectedVariant = variants.find((variant) =>
-       variant.color === activeColor?.color
+       variant.color === activeColor?.color && variant.storage === selectedStorage
     );
 
     const handleAddToCart = (e : React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         e.stopPropagation();
-        if(selectedVariant && selectedVariant.stock > 0){
+        if(selectedVariant && selectedVariant.stock > 0 && activeColor){
             addItem({
                 variantId : selectedVariant.id,
-                productId : slug,
+                productId : id,
                 name ,
                 image :img ,
                 color : activeColor.name ,
@@ -72,7 +96,7 @@ export const CardProduct: FC<CardProductProps> = ({ img, name, price, slug, colo
         </Link>
         <div className="flex flex-col items-center gap-1.5 px-4 pb-5 pt-4">
             <p className="text-center text-sm font-semibold text-slate-900">{name}</p>
-            <p className="text-sm font-bold text-cyan-700">{formatPrice(price)}</p>
+            <p className="text-sm font-bold text-cyan-700">{formatPrice(selectedVariant?.price ?? price)}</p>
 
             <div className="mt-1 flex gap-2">
                 {colors.map((color) => (
@@ -81,12 +105,30 @@ export const CardProduct: FC<CardProductProps> = ({ img, name, price, slug, colo
                       key={color.color}
                       aria-label={color.name}
                       className={`grid h-5 w-5 place-items-center rounded-full ${activeColor?.color === color.color ? 'ring-2 ring-slate-900 ring-offset-1' : ''}`}
-                      onClick={() => setActiveColor(color)}
+                      onClick={() => handleColorChange(color)}
                     >
                         <span className="h-3.5 w-3.5 rounded-full border border-black/10" style={{ backgroundColor: color.color }} />
                     </button>
                 ))}
             </div>
+            {storagesForColor.length > 0 && (
+                <div className="mt-1 flex flex-wrap justify-center gap-1">
+                    {storagesForColor.map((storage) => (
+                        <button
+                            type="button"
+                            key={storage}
+                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                                selectedStorage === storage
+                                    ? 'bg-slate-950 text-white'
+                                    : 'bg-slate-100 text-slate-600'
+                            }`}
+                            onClick={() => setSelectedStorage(storage)}
+                        >
+                            {storage}
+                        </button>
+                    ))}
+                </div>
+            )}
         </div>
         <div className="absolute left-3 top-3">
             {stock === 0 &&  <Tag contentTag="agotado" />}

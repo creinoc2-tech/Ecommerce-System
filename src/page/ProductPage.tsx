@@ -11,7 +11,6 @@ import { useProductsData } from '../hook/products/useProductsData';
 import type { VariantProduct } from '../interfaces';
 import { Tag } from '../components/shared/Tag';
 import { Loader } from '../components/shared/Loader';
-import { useCounterStore } from '../store/counter.state';
 import { useCartStore } from '../store/cart.store';
 import toast from 'react-hot-toast';
 
@@ -31,9 +30,7 @@ export const ProductPage = () => {
     const [selectedColor, setSelectedColor] = useState<string | null>(null);
     const [selectedStorage, setSelectedStorage] = useState<string | null>(null);
     const [selectedVariant, setSelectedVariant] = useState<VariantProduct | null>(null);
-     const count = useCounterStore((state) => state.count);
-    const increment = useCounterStore((state) => state.increment);
-     const decrement = useCounterStore((state) => state.decrement);
+    const [count, setCount] = useState(1);
 
      const additem = useCartStore(state => state.addItem);
      const navigate = useNavigate()
@@ -124,6 +121,7 @@ useEffect(() => {
     setSelectedColor(null);
     setSelectedStorage(null);
     setSelectedVariant(null);
+    setCount(1);
 }, [slug]);
 
 if(isLoading) return  <Loader />;
@@ -237,14 +235,14 @@ if(!product || isError) return (
                             </p>
                          <div className="flex gap-8 px-5 border border-slate-200 w-fit rounded-full">
                             <button
-                                onClick={decrement}
+                                onClick={() => setCount((prev) => Math.max(1, prev - 1))}
                                 disabled={count == 1}
                             >
                                 <LuMinus size={15} />
                            </button>
                             <span className='text-slate-500 text-sm'>{count}</span>
                             <button
-                                onClick={increment}
+                                onClick={() => setCount((prev) => prev + 1)}
                             >
                                 <LuPlus size={15} />
                             </button>

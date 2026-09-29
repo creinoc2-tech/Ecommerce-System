@@ -1,6 +1,5 @@
 import type { FC } from "react";
 import { formatPrice } from "../../helpers";
-import { useCounterStore } from "../../store/counter.state";
 import { LuMinus, LuPlus } from "react-icons/lu";
 import { useCartStore } from "../../store/cart.store";
 
