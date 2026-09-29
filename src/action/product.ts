@@ -18,7 +18,6 @@ export const getProducts = async (page: number) => {
     .range(from, to);
 
   if (error) {
-    console.log(error.message);
     throw new Error(error.message);
   }
   return { products, count };
@@ -48,7 +47,6 @@ export const getFilteredProducts = async ({
   const { data, error, count } = await query;
 
   if (error) {
-    console.log(error.message);
     throw new Error(error.message);
   }
 
@@ -63,7 +61,6 @@ export const getRecentProducts = async () => {
     .limit(4);
 
   if (error) {
-    console.log(error.message);
     throw new Error(error.message);
   }
 
@@ -77,7 +74,6 @@ export const getRandomProducts = async () => {
     .limit(20);
 
   if (error) {
-    console.log(error.message);
     throw new Error(error.message);
   }
 
@@ -94,7 +90,6 @@ export const getProductBySlug = async (slug: string) => {
     .single();
 
   if (error) {
-    console.log(error.message);
     throw new Error(error.message);
   }
 
@@ -108,7 +103,6 @@ export const searchProducts = async (searchTerm: string) => {
     .ilike("name", `%${searchTerm}%`);
 
   if (error) {
-    console.log(error.message);
     throw new Error(error.message);
   }
 
@@ -195,7 +189,6 @@ export const deleteProduct = async (productId: string) => {
     .eq("product_id", productId);
 
   if (variantsError) {
-    console.log(variantsError.message);
     throw new Error(variantsError.message);
   }
 
@@ -288,8 +281,6 @@ export const updateProduct = async (
 
       if (deleteImagesError) {
         throw new Error(deleteImagesError.message);
-      } else {
-        console.log(`Imágenes eliminadas: ${filesToDelete.join(", ")}`);
       }
     }
 
@@ -393,7 +384,7 @@ export const updateProduct = async (
     }
 
     return updatedProduct;
-  } catch (error) {
-    console.log(error);
+  } catch {
+    return undefined;
   }
 };

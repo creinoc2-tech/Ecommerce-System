@@ -49,11 +49,9 @@ export const signOut = async () => {
   try {
     const { error } = await supabases.auth.signOut();
     if (error) {
-      console.log(error);
       throw new Error("Error al cerrar sesión");
     }
   } catch (error) {
-    console.log(error);
   }
 };
 
@@ -74,7 +72,6 @@ export const getUserData = async (userId: string) => {
     .single();
 
   if (error) {
-    console.log(error);
     throw new Error("Error al obtener los datos del usuario");
   }
 
@@ -89,7 +86,6 @@ export const getUserRole = async (userId: string) => {
     .single();
 
   if (error) {
-    console.log(error);
     throw new Error("Error al obtener el rol del usuario");
   }
   return data.role;

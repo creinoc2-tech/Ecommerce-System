@@ -12,9 +12,6 @@ export const DashboardOrderPage = () => {
   const { id } = useParams<{ id: string }>();
 
   const { data: order, isLoading } = useOrderAdmin(id ?? "");
-    console.log("este es mi id" , id)
-
-  console.log("estos son lod datos de mi ordern " , order)
 
   if (isLoading || !order) return <Loader />;
 

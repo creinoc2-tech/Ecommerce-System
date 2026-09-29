@@ -12,8 +12,7 @@ export const useChangeStatusOrder = () => {
 				queryKey: ['orders', 'admin'],
 			});
 		},
-		onError: error => {
-			console.log(error);
+		onError: () => {
 			toast.error('No se pudo actualizar el estado de la orden', {
 				position: 'bottom-right',
 			});

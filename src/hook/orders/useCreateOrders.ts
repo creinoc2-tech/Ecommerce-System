@@ -14,7 +14,6 @@ export const useCreateOrders = () => {
             navigate(`/checkout/${data.id}/thank-you`);
         } ,
         onError : (error) => {
-            console.log(error)
             toast.error(error.message , {
                 position : "bottom-right",
             })

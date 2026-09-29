@@ -15,8 +15,6 @@ export const createOrder = async (order: OrderInput) => {
       .eq("user_id", userId)
       .single();
 
-    console.log(customerData);
-
     if (errorCustomer) {
       throw new Error(errorCustomer.message);
     }
@@ -41,8 +39,6 @@ export const createOrder = async (order: OrderInput) => {
                 el producto con ID: ${item.variantId}`);
       }
     }
-
-    console.log(order);
 
     const { data: addressData, error: addressError } = await supabases
       .from("addresses")
@@ -122,8 +118,8 @@ export const createOrder = async (order: OrderInput) => {
     }
 
     return orderData;
-  } catch (error) {
-    console.log(error);
+  } catch {
+    return undefined;
   }
 };
 
@@ -166,7 +162,6 @@ export const getOrderById = async (orderId: string) => {
     throw new Error(errorUser.message);
   }
   const userId = data.user?.id;
-  console.log("esto es mi user", userId);
 
   const { data: customerData, error: errorCustomer } = await supabases
     .from("customers")
@@ -187,8 +182,6 @@ export const getOrderById = async (orderId: string) => {
     .eq("customer_id", customerId)
     .eq("id", orderId)
     .single();
-
-  console.log(" del usuario order", orderData);
 
   if (orderError) {
     throw new Error(orderError.message);
@@ -233,7 +226,6 @@ export const getAllOrders = async () => {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.log(error);
     throw new Error(error.message);
   }
 
@@ -258,7 +250,6 @@ export const updateOrderStatus = async ({
     .eq("id", id);
 
   if (error) {
-    console.log(error);
     throw new Error(error.message);
   }
 };
