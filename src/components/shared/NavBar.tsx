@@ -9,7 +9,7 @@ import { useCartStore } from '../../store/cart.store'
 import { useAuth } from '../../context/AuthContext'
 import { LuLoader } from 'react-icons/lu'
 import { useCustomer } from '../../hook/Auth/UseCustomer'
-
+ 
 export const Navbar = () => {
   const totalItemsInCart = useCartStore(state => state.totalItemsInCart)
   const openSheet = useGlobalStore(state => state.openSheet)
