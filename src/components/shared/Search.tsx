@@ -70,7 +70,7 @@ export const Search = () => {
                     <p className="text-sm font-medium  text-gray-600">
                       {formatPrice(product.variants[0]?.price ?? 0)}
                     </p>
-                  </div>
+                  </div> 
                 </button>
               </li>
             ))}
