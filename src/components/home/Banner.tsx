@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 
@@ -37,6 +37,14 @@ export const Banner = () => {
   const next = () => {
     setCurrent((index) => (index === slides.length - 1 ? 0 : index + 1))
   }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((index) => (index === slides.length - 1 ? 0 : index + 1))
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <section className="relative overflow-hidden bg-slate-950 text-white">
