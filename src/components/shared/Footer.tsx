@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import {  useState, type FormEvent } from 'react'
 import { BiChevronRight } from 'react-icons/bi'
 import { Link } from 'react-router'
 import { socialLinks } from '../../constans/links'

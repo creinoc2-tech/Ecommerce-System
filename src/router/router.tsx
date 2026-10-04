@@ -16,6 +16,7 @@ import { DashboardOrdersPage } from "../page/dashboard/DashboardOrdersPage";
 import { DashboardOrderPage } from "../page/dashboard/DashboardOrderPage";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { NotFoundPage } from "../page/NotFoundPage";
+import { DashboardCategoriesPage } from "../page/dashboard/DashboardCategoriesPage";
 
 export const router = createBrowserRouter([
   {
@@ -117,6 +118,12 @@ export const router = createBrowserRouter([
             path: "ordenes/:id",
             element: <DashboardOrderPage />,
           },
+          {
+             path: "categorias",
+            element: <DashboardCategoriesPage />,
+          }
+
+
         ],
       },
     ],

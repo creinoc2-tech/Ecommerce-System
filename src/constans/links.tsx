@@ -3,6 +3,7 @@ import {
 	FaCartShopping,
 	FaFacebookF,
 	FaInstagram,
+	FaTags,
 	FaTiktok,
 	FaXTwitter,
 } from 'react-icons/fa6';
@@ -93,5 +94,12 @@ export const dashboardLinks = [
 		title: 'Ordenes',
 		href: '/dashboard/ordenes',
 		icon : <FaCartShopping size={22} />
+	 } ,
+
+	 {
+		id: 3,
+		title: 'Categorias',
+		href: '/dashboard/categorias',
+		icon : <FaTags size={22} />
 	 }
 ]
