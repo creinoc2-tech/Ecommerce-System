@@ -21,7 +21,7 @@ interface Props {
 
 export const FormProducts: FC<Props> = ({ titleForm }) => {
   const navigate = useNavigate();
-  const { mutate :createProduct , isPending } = useCreateProducts();
+  const { mutate: createProduct, isPending } = useCreateProducts();
   const { slug } = useParams<{ slug: string }>();
 
   const {
@@ -37,31 +37,31 @@ export const FormProducts: FC<Props> = ({ titleForm }) => {
   const { mutate: updateProduct } =
     useUpdateProduct(product?.id || "");
 
- const onSubmit = handleSubmit(data => {
-		const features = data.features.map(feature => feature.value);
+  const onSubmit = handleSubmit(data => {
+    const features = data.features.map(feature => feature.value);
 
-		if (slug) {
-			updateProduct({
-				name: data.name,
-				brand: data.brand,
-				slug: data.slug,
-				variants: data.variants,
-				images: data.images,
-				description: data.description,
-				features,
-			});
-		} else {
-			createProduct({
-				name: data.name,
-				brand: data.brand,
-				slug: data.slug,
-				variants: data.variants,
-				images: data.images,
-				description: data.description,
-				features,
-			});
-		}
-	});
+    if (slug) {
+      updateProduct({
+        name: data.name,
+        brand: data.brand,
+        slug: data.slug,
+        variants: data.variants,
+        images: data.images,
+        description: data.description,
+        features,
+      });
+    } else {
+      createProduct({
+        name: data.name,
+        brand: data.brand,
+        slug: data.slug,
+        variants: data.variants,
+        images: data.images,
+        description: data.description,
+        features,
+      });
+    }
+  });
   const watchName = watch("name");
 
   useEffect(() => {

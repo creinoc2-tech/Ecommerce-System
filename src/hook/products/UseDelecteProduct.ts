@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+ import toast from "react-hot-toast";
 import { deleteProduct } from "../../action";
-import toast from "react-hot-toast";
 
 export const useDeleteProduct = () => {
     const queryClient = useQueryClient();

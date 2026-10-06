@@ -2,7 +2,7 @@ import type { ICategories } from "../interfaces/category.interface";
 import supabases from "../superbase/superbase";
 
 export const getCategorySlug = async (slug: string) => {
-  const { data, error } = await supabases
+  const { data: category, error } = await supabases
     .from("categories")
     .select("*")
     .eq("slug", slug)
@@ -12,11 +12,11 @@ export const getCategorySlug = async (slug: string) => {
     throw new Error(error.message);
   }
 
-  return data;
+  return category;
 };
 
 export const getRecentCategory = async () => {
-  const { data: products, error } = await supabases
+  const { data: categories, error } = await supabases
     .from("categories")
     .select("*")
     .order("created_at", { ascending: false })
@@ -26,7 +26,7 @@ export const getRecentCategory = async () => {
     throw new Error(error.message);
   }
 
-  return products;
+  return categories;
 };
 
 export const CreateCategory = async (categories: ICategories) => {
@@ -55,7 +55,7 @@ export const CreateCategory = async (categories: ICategories) => {
         customer_id: customerId,
         name: categories.name,
         slug: categories.slug,
-        image_url: [],
+        images: [],
         is_active: categories.is_active,
       })
       .select()
@@ -101,29 +101,30 @@ export const CreateCategory = async (categories: ICategories) => {
   }
 };
 
-export const deleteProduct = async (category: string) => {
-  const { data: CategorieImages, error: productsError } = await supabases
+export const deleteCategoryWithImages = async (category: string) => {
+  const { data: categoryImages, error: categoryError } = await supabases
     .from("categories")
-    .select("image_url")
+    .select("images")
     .eq("id", category)
     .single();
 
-  if (productsError) {
-    throw new Error(productsError.message);
+  if (categoryError) {
+    throw new Error(categoryError.message);
   }
 
-  const { error: productDeleteError } = await supabases
+  const { error: categoryDeleteError } = await supabases
     .from("categories")
     .delete()
     .eq("id", category);
 
-  if (productDeleteError) {
-    throw new Error(productDeleteError.message);
+  if (categoryDeleteError) {
+    throw new Error(categoryDeleteError.message);
   }
 
-  if (CategorieImages.image_url.length > 0) {
+  const images = categoryImages.images ?? [];
+  if (images.length > 0) {
     const folderName = category;
-    const paths = CategorieImages.image_url.map((image: string) => {
+    const paths = images.map((image: string) => {
       const fileName = image.split("/").pop();
       return `${folderName}/${fileName}`;
     });
@@ -147,25 +148,15 @@ export interface CategoryInput {
   customer_id?: string | null;
 }
 
-const extractCategoryFilePath = (url: string) => {
-  const parts = url.split("/storage/v1/object/public/category-images/");
-
-  if (parts.length !== 2) {
-    throw new Error(`URL de imagen no válida: ${url}`);
-  }
-
-  return parts[1];
-};
-
 const uploadCategoryImage = async (categoryId: string, image: File) => {
   const { data, error } = await supabases.storage
-    .from("category-images")
+    .from("categorias-productos")
     .upload(`${categoryId}/${categoryId}-${image.name}`, image);
 
   if (error) throw new Error(error.message);
 
-  return supabases.storage.from("category-images").getPublicUrl(data.path).data
-    .publicUrl;
+  return supabases.storage.from("categorias-productos").getPublicUrl(data.path)
+    .data.publicUrl;
 };
 
 export const getCategories = async (page: number) => {
@@ -244,7 +235,9 @@ export const getRandomCategories = async () => {
     throw new Error(error.message);
   }
 
-  const randomCategories = categories.sort(() => 0.5 - Math.random()).slice(0, 4);
+  const randomCategories = categories
+    .sort(() => 0.5 - Math.random())
+    .slice(0, 4);
 
   return randomCategories;
 };
@@ -278,54 +271,61 @@ export const searchCategories = async (searchTerm: string) => {
 
 export const createCategory = async (categoryData: CategoryInput) => {
   try {
+    const { data, error: errorUser } = await supabases.auth.getUser();
+    if (errorUser) {
+      throw new Error(errorUser.message);
+    }
+    const userId = data.user?.id;
+
+    const { data: customerData, error: errorCustomer } = await supabases
+      .from("customers")
+      .select("id")
+      .eq("user_id", userId)
+      .single();
+
+    if (errorCustomer) {
+      throw new Error(errorCustomer.message);
+    }
+
+    const customerId = customerData?.id;
+
+    let imageUrl: string;
+
+    if (categoryData.image instanceof File) {
+      imageUrl = await uploadCategoryImage(customerId, categoryData.image);
+    } else if (typeof categoryData.image === "string" && categoryData.image) {
+      imageUrl = categoryData.image;
+    } else {
+      throw new Error("Debes seleccionar una imagen para la categoría.");
+    }
+
     const { data: category, error: categoryError } = await supabases
       .from("categories")
       .insert({
         name: categoryData.name,
         slug: categoryData.slug,
-        image_url: null,
+        image_url: [imageUrl],
         is_active: categoryData.is_active ?? true,
-        customer_id: categoryData.customer_id ?? null,
+        customer_id: customerId ?? null,
       })
       .select()
       .single();
 
     if (categoryError) {
+      if (categoryData.image instanceof File) {
+        const fileName = imageUrl.split("/").pop();
+        const { error: cleanupError } = await supabases.storage
+          .from("categorias-productos")
+          .remove([`${customerId}/${fileName}`]);
+
+        if (cleanupError) {
+          console.error(
+            "No se pudo eliminar la imagen después de fallar la categoría:",
+            cleanupError,
+          );
+        }
+      }
       throw new Error(categoryError.message);
-    }
-
-    if (categoryData.image instanceof File) {
-      const imageUrl = await uploadCategoryImage(category.id, categoryData.image);
-
-      const { error: updateError } = await supabases
-        .from("categories")
-        .update({
-          image_url: imageUrl,
-        })
-        .eq("id", category.id);
-
-      if (updateError) {
-        throw new Error(updateError.message);
-      }
-
-      return { ...category, image_url: imageUrl };
-    }
-
-    if (typeof categoryData.image === "string" && categoryData.image) {
-      const { data: updatedCategory, error: updateError } = await supabases
-        .from("categories")
-        .update({
-          image_url: categoryData.image,
-        })
-        .eq("id", category.id)
-        .select()
-        .single();
-
-      if (updateError) {
-        throw new Error(updateError.message);
-      }
-
-      return updatedCategory;
     }
 
     return category;
@@ -357,11 +357,20 @@ export const deleteCategory = async (categoryId: string) => {
     throw new Error(categoryDeleteError.message);
   }
 
-  if (category.image_url) {
-    const path = extractCategoryFilePath(category.image_url);
+  const imageUrls = Array.isArray(category.image_url)
+    ? category.image_url
+    : category.image_url
+      ? [category.image_url]
+      : [];
+
+  if (imageUrls.length > 0) {
+    const paths = imageUrls.map((imageUrl: string) => {
+      const fileName = imageUrl.split("/").pop();
+      return `${categoryId}/${fileName}`;
+    });
     const { error: storageError } = await supabases.storage
-      .from("category-images")
-      .remove([path]);
+      .from("categorias-productos")
+      .remove(paths);
 
     if (storageError) {
       throw new Error(storageError.message);
@@ -376,37 +385,63 @@ export const updateCategory = async (
   categoryData: CategoryInput,
 ) => {
   try {
-    const { data: currentCategory, error: currentCategoryError } = await supabases
-      .from("categories")
-      .select("image_url")
-      .eq("id", categoryId)
+    const { data, error: errorUser } = await supabases.auth.getUser();
+    if (errorUser) {
+      throw new Error(errorUser.message);
+    }
+    const userId = data.user?.id;
+
+    const { data: customerData, error: errorCustomer } = await supabases
+      .from("customers")
+      .select("id")
+      .eq("user_id", userId)
       .single();
+
+    if (errorCustomer) {
+      throw new Error(errorCustomer.message);
+    }
+
+    const customerId = customerData?.id;
+
+    const { data: currentCategory, error: currentCategoryError } =
+      await supabases
+        .from("categories")
+        .select("image_url")
+        .eq("id", categoryId)
+        .single();
 
     if (currentCategoryError) {
       throw new Error(currentCategoryError.message);
     }
 
-    const existingImage = currentCategory.image_url || null;
+    const existingImages = Array.isArray(currentCategory.image_url)
+      ? currentCategory.image_url
+      : currentCategory.image_url
+        ? [currentCategory.image_url]
+        : [];
+    const existingImage = existingImages[0] ?? null;
     let imageUrl = existingImage;
 
     if (categoryData.image instanceof File) {
       if (existingImage) {
+        const fileName = existingImage.split("/").pop();
         const { error: deleteImageError } = await supabases.storage
-          .from("category-images")
-          .remove([extractCategoryFilePath(existingImage)]);
+          .from("categorias-productos")
+          .remove([`${customerId}/${fileName}`]);
 
         if (deleteImageError) {
           throw new Error(deleteImageError.message);
         }
       }
 
-      imageUrl = await uploadCategoryImage(categoryId, categoryData.image);
+      imageUrl = await uploadCategoryImage(customerId, categoryData.image);
     } else if (typeof categoryData.image === "string") {
       imageUrl = categoryData.image;
     } else if (categoryData.image === null && existingImage) {
+      const fileName = existingImage.split("/").pop();
       const { error: deleteImageError } = await supabases.storage
-        .from("category-images")
-        .remove([extractCategoryFilePath(existingImage)]);
+        .from("categorias-productos")
+        .remove([`${customerId}/${fileName}`]);
 
       if (deleteImageError) {
         throw new Error(deleteImageError.message);
@@ -420,9 +455,9 @@ export const updateCategory = async (
       .update({
         name: categoryData.name,
         slug: categoryData.slug,
-        image_url: imageUrl,
+        image_url: imageUrl ? [imageUrl] : [],
         is_active: categoryData.is_active ?? true,
-        customer_id: categoryData.customer_id ?? null,
+        customer_id: customerId ?? null,
       })
       .eq("id", categoryId)
       .select()
@@ -438,5 +473,22 @@ export const updateCategory = async (
     throw error instanceof Error
       ? error
       : new Error("No se pudo guardar la categoria");
+  }
+};
+
+export const updateCategoryStatus = async ({
+  id,
+  is_active,
+}: {
+  id: string;
+  is_active: boolean;
+}) => {
+  const { error } = await supabases
+    .from("categories")
+    .update({ is_active })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
   }
 };

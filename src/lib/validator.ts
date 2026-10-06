@@ -20,8 +20,29 @@ export const addressSchema = z.object({
 
 })
 
+export const categorySchema = z.object({
+  name: z.string().trim().min(1, "El nombre de la categoría es obligatorio"),
+  slug: z
+    .string()
+    .trim()
+    .min(1, "El slug de la categoría es obligatorio")
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug inválido"),
+  image_url: z
+    .union([
+      z.custom<File>(
+        (value) => typeof File !== "undefined" && value instanceof File,
+        "La imagen seleccionada no es válida",
+      ),
+      z.string().url("La URL de la imagen no es válida"),
+      z.literal(""),
+    ])
+    .nullable()
+    .optional(),
+});
+
 export type UserRegisterFormValues = z.infer<typeof userRegisterSchema>;
 export type AddressFormValues = z.infer<typeof addressSchema>;
+export type CategoryFormValues = z.infer<typeof categorySchema>;
 
 const isContentEmpty = (value: JSONContent) : boolean => {
    if( !value || !Array.isArray(value.content) || value.content.length == 0 ){

@@ -17,6 +17,8 @@ import { DashboardOrderPage } from "../page/dashboard/DashboardOrderPage";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import { NotFoundPage } from "../page/NotFoundPage";
 import { DashboardCategoriesPage } from "../page/dashboard/DashboardCategoriesPage";
+import { DashboardNewCategoriesPage } from "../page/dashboard/DashboardNewCategoriesPage";
+import { DashboardCategorieSlugPage } from "../page/dashboard/DashboardCategorieSlugPage";
 
 export const router = createBrowserRouter([
   {
@@ -121,6 +123,15 @@ export const router = createBrowserRouter([
           {
              path: "categorias",
             element: <DashboardCategoriesPage />,
+          } ,
+
+          {
+            path: "categorias/new",
+            element: <DashboardNewCategoriesPage />,
+          },
+          {
+            path: "categorias/edit/:slug",
+            element: <DashboardCategorieSlugPage />,
           }
 
 

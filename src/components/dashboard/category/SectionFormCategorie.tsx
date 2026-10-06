@@ -6,7 +6,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export const SectionFormProduct: FC<Props> = ({
+export const SectionFormCategorie: FC<Props> = ({
   titleSection,
   className,
   children,
