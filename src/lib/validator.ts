@@ -64,6 +64,7 @@ const isContentEmpty = (value: JSONContent) : boolean => {
 export const productSchema = z.object({
   name: z.string().min(1, "El nombre del producto es obligatorio"),
   brand : z.string().min(1, "La marca del producto es obligatoria"),
+  category_id: z.string().min(1, "Selecciona una categoría"),
   slug: z
 		.string()
 		.min(1, 'El slug del producto es obligatorio')

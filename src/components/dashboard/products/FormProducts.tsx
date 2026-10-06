@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, type FC } from "react";
+import { useEffect, type FC } from "react";
 import { useForm } from "react-hook-form";
 import { productSchema, type ProductFormValues } from "../../../lib/validator";
 import { IoIosArrowBack } from "react-icons/io";
@@ -15,6 +15,7 @@ import { useCreateProducts } from "../../../hook/products/UseCreateProducts";
 import { Loader } from "../../shared/Loader";
 import { useUpdateProduct } from "../../../hook/products/useUpdateProduct";
 import { useProductsData } from "../../../hook/products/useProductsData";
+import { useCategoriesByCustomerId } from "../../../hook/category/useCategoriesByCustomerId";
 interface Props {
   titleForm: string;
 }
@@ -34,6 +35,11 @@ export const FormProducts: FC<Props> = ({ titleForm }) => {
   } = useForm<ProductFormValues>({ resolver: zodResolver(productSchema) });
 
   const { product, isLoading } = useProductsData(slug || "");
+  const {
+    categories,
+    isLoading: isLoadingCategories,
+    isError: isCategoriesError,
+  } = useCategoriesByCustomerId();
   const { mutate: updateProduct } =
     useUpdateProduct(product?.id || "");
 
@@ -49,6 +55,7 @@ export const FormProducts: FC<Props> = ({ titleForm }) => {
         images: data.images,
         description: data.description,
         features,
+        category_id: data.category_id,
       });
     } else {
       createProduct({
@@ -59,6 +66,7 @@ export const FormProducts: FC<Props> = ({ titleForm }) => {
         images: data.images,
         description: data.description,
         features,
+        category_id: data.category_id,
       });
     }
   });
@@ -69,6 +77,7 @@ export const FormProducts: FC<Props> = ({ titleForm }) => {
       setValue("name", product.name);
       setValue("slug", product.slug);
       setValue("brand", product.brand);
+      setValue("category_id", product.category_id);
       setValue(
         "features",
         product.features.map((feature: string) => ({ value: feature })),
@@ -133,6 +142,43 @@ export const FormProducts: FC<Props> = ({ titleForm }) => {
             errors={errors}
             required
           />
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="category_id"
+              className="text-xs tracking-tighter capitalize text-gray-900"
+            >
+              Categoría
+            </label>
+            <select
+              id="category_id"
+              className={`border rounded-md py-1.5 px-3 text-sm font-medium text-slate-600 outline-none ${
+                errors.category_id ? "border-red-500" : "border-gray-300"
+              }`}
+              disabled={isLoadingCategories || isCategoriesError}
+              {...register("category_id")}
+            >
+              <option value="">
+                {isLoadingCategories
+                  ? "Cargando categorías..."
+                  : "Selecciona una categoría"}
+              </option>
+              {categories?.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+            {errors.category_id && (
+              <p className="text-xs text-red-500">
+                {errors.category_id.message}
+              </p>
+            )}
+            {isCategoriesError && (
+              <p className="text-xs text-red-500">
+                No se pudieron cargar las categorías.
+              </p>
+            )}
+          </div>
           <FeaturesInput control={control} errors={errors} />
         </SectionFormProduct>
 

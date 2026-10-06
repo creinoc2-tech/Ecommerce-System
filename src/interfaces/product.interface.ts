@@ -51,6 +51,7 @@ export interface ProductInput {
 	features: string[];
 	description: JSONContent;
 	images: File[];
+	category_id: string;
 	variants: VariantInput[];
 }
 

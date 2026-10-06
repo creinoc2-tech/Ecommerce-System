@@ -115,6 +115,8 @@ export const searchProducts = async (searchTerm: string) => {
 
 export const createProduct = async (productData: ProductInput) => {
   try {
+
+    console.log("productData", productData);
     const { data: product, error: productError } = await supabases
       .from("products")
       .insert({
@@ -123,6 +125,7 @@ export const createProduct = async (productData: ProductInput) => {
         slug: productData.slug,
         features: productData.features,
         description: productData.description,
+        category_id: productData.category_id,
         images: [],
       })
       .select()

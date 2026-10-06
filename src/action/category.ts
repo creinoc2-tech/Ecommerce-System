@@ -15,6 +15,38 @@ export const getCategorySlug = async (slug: string) => {
   return category;
 };
 
+export const getCategoriesByCustomerId = async () => {
+  const { data, error: errorUser } = await supabases.auth.getUser();
+  if (errorUser) {
+    throw new Error(errorUser.message);
+  }
+  const userId = data.user?.id;
+
+  const { data: customerData, error: errorCustomer } = await supabases
+    .from("customers")
+    .select("id")
+    .eq("user_id", userId)
+    .single();
+
+  if (errorCustomer) {
+    throw new Error(errorCustomer.message);
+  }
+
+  const customerId = customerData?.id;
+
+
+   const { data: categories, error } = await supabases
+    .from("categories")
+    .select("*")
+    .eq("customer_id", customerId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return categories;
+};
+
 export const getRecentCategory = async () => {
   const { data: categories, error } = await supabases
     .from("categories")
