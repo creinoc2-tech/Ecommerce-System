@@ -10,12 +10,11 @@ import { CellTableCategory } from "./CellTableCategory";
 import { useUpdateCategoryStatus } from "../../../hook/category/useUpdateCategoryStatus";
 
 const tableHeaders = [
-  "",
+  "Imagen",
   "Nombre",
-  "Imagen  ",
-  "Activo",
+  "Activar",
   "Fecha de creación",
-  "",
+  "Action",
 ];
 
 const statusOptions = [
@@ -124,7 +123,6 @@ export const TableCategoria = () => {
                     </select>
                   </td>
 
-                  <CellTableCategory content={selectedStatusValue} />
                   <CellTableCategory
                     content={formatDateShort(category?.created_at)}
                   />
