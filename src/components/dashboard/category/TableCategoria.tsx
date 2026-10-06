@@ -59,53 +59,61 @@ export const TableCategoria = () => {
 
   return (
     <div
-      className="flex flex-col flex-1 border border-gray-200 
-    rounded-lg p-5 bg-white"
+      className="flex flex-col flex-1 overflow-hidden rounded-xl border border-gray-200/80 bg-white shadow-[0_3px_12px_rgba(0,0,0,0.05),0_1px_3px_rgba(0,0,0,0.03)]"
     >
-      <h1 className="font-bold text-xl">Categorías</h1>
+      <h1 className="px-6 pt-5 font-bold text-xl">Categorías</h1>
 
-      <p className="text-sm mt-1 mb-8 font-regular text-gray-500">
+      <p className="text-sm mt-1 mb-5 px-6 font-regular text-gray-500">
         Gestiona tus categorías y mira las estadísticas de tus ventas.
       </p>
 
-      <div className="relative w-full h-full">
-        <table className="text-sm w-full caption-bottom overflow-auto">
-          <thead className="border-b border-gray-200 pb-3">
-            <tr className="text-sm font-bold">
+      <div className="relative w-full h-full overflow-hidden">
+        <table className="w-full border-collapse text-left text-[14px] text-gray-700">
+          <thead>
+            <tr className="select-none bg-[#1972f5] text-[13px] font-bold tracking-wider text-white">
               {tableHeaders.map((header, index) => (
-                <th key={index} className="h-12 px-4 text-left">
+                <th
+                  key={index}
+                  className={`py-3 px-6 text-left uppercase ${
+                    index < tableHeaders.length - 1
+                      ? "border-r border-blue-400/20"
+                      : ""
+                  }`}
+                >
                   {header}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-gray-200">
             {categories?.map((category, index) => {
               const selectedStatusValue =
                 selectedStatus[category.id] || "Active";
 
               return (
-                <tr key={index}>
-                  <td className="p-4 align-middle sm:table-cell">
-                    <img
-                      src={
-                        category?.images?.[0] ??
-                        (Array.isArray(category?.image_url)
-                          ? category.image_url[0]
-                          : category?.image_url)
-                      }
-                      alt="Imagen de la categoría"
-                      loading="lazy"
-                      decoding="async"
-                      className="w-16 h-16 aspect-square rounded-md object-contain"
-                    />
+                <tr key={index} className="transition-colors hover:bg-slate-50/50">
+                  <td className="border-r border-gray-100 px-6 py-3.5 align-middle sm:table-cell">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-lg border border-gray-200/90 bg-white p-1.5 shadow-[0_2px_6px_rgba(0,0,0,0.08)]">
+                      <img
+                        src={
+                          category?.images?.[0] ??
+                          (Array.isArray(category?.image_url)
+                            ? category.image_url[0]
+                            : category?.image_url)
+                        }
+                        alt="Imagen de la categoría"
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full rounded-md object-contain"
+                      />
+                    </div>
                   </td>
 
                   <CellTableCategory content={category.name} />
 
-                  <td className="p-4 tracking-tighter">
+                  <td className="border-r border-gray-100 px-6 py-3.5 font-medium tracking-tighter text-gray-700">
                     <select
-                      className="border border-gray-300 rounded-md p-1 w-full"
+                      className="w-full rounded-md border border-gray-300 p-1"
                       onChange={(e) => {
                         handleStatusChange(category.id, e.target.value);
                         handleStatusChanges(
@@ -127,7 +135,7 @@ export const TableCategoria = () => {
                     content={formatDateShort(category?.created_at)}
                   />
 
-                  <td className="relative ">
+                  <td className="relative px-6 py-3.5">
                     <button
                       className="text-slate-900"
                       onClick={() => handleMenuToggle(index)}
@@ -136,14 +144,12 @@ export const TableCategoria = () => {
                     </button>
                     {openMenuId === index && (
                       <div
-                        className="absolute right-0 mt-2 bg-white border border-gray-200
-                                 rounded-md shadow-xl z-10 w-[120px]"
+                        className="absolute right-6 z-10 mt-2 w-[120px] rounded-md border border-gray-200 bg-white shadow-xl"
                         role="menu "
                       >
                         <Link
                           to={`/dashboard/categorias/edit/${category.slug}`}
-                          className="flex items-center gap-1 w-full text-left px-4 py-2 text-xs font-medium
-                                    text-gray-700 hover:bg-gray-100 "
+                          className="flex w-full items-center gap-1 px-4 py-2 text-left text-xs font-medium text-gray-700 hover:bg-gray-100"
                         >
                           Editar
                           <HiOutlineExternalLink
@@ -153,8 +159,7 @@ export const TableCategoria = () => {
                         </Link>
 
                         <button
-                          className="block w-full text-left px-4 py-2 text-xs font-medium 
-                                    text-red-700 hover:bg-gray-100 "
+                          className="block w-full px-4 py-2 text-left text-xs font-medium text-red-700 hover:bg-gray-100"
                           onClick={() => handleDeleteCategory(category.id)}
                         >
                           Eliminar

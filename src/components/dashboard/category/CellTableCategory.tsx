@@ -5,5 +5,9 @@ interface Props {
 }
 
 export const CellTableCategory: FC<Props> = ({ content }) => {
-  return <td className="p-4 tracking-tighter">{content}</td>;
+  return (
+    <td className="border-r border-gray-100 px-6 py-3.5 font-medium tracking-tighter text-gray-700">
+      {content}
+    </td>
+  );
 };
