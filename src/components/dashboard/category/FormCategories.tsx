@@ -34,7 +34,7 @@ export const FormCategories: FC<Props> = ({ titleForm }) => {
     () => (categoryImageUrl ? [categoryImageUrl] : []),
     [categoryImageUrl],
   );
-
+   console.log("categoryImageUrls", categoryImageUrls);
   const {
     register,
     handleSubmit,
