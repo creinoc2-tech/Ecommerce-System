@@ -57,3 +57,26 @@ input[type=number] {
   background: #cffafe;
   color: #164e63;
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.submenu-tree {
+  position: relative;
+}
+
+.submenu-tree::before {
+  content: "";
+  position: absolute;
+  left: 22px;
+  top: 0;
+  bottom: 6px;
+  width: 1px;
+  background-color: #d8dde6;
+}
