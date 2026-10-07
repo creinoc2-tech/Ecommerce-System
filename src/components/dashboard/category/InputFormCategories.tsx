@@ -23,38 +23,29 @@ export const InputCategories: FC<Props> = ({
   placeholder,
 }) => {
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex justify-between items-center">
+    <div>
+      <div className="mb-2.5 flex items-center justify-between">
         <label
           htmlFor={name}
-          className="text-xs tracking-tighter capitalize 
-           text-gray-900"
+          className="block text-[15px] font-semibold text-gray-800"
         >
           {label}
         </label>
         {required && (
-          <span
-            className={`${required && "text-red-500 text-sm mr-3"} font-bold self-end`}
-          >
-            *
-          </span>
+          <span className="text-sm font-bold text-red-500">*</span>
         )}
       </div>
 
-      <div
-        className={`border border-gray-300 rounded-md overflow-hidden gap-5 
-           items-center  ${errors[name] ? "border-red-500" : ""} 
-            `}
-      >
-        <input
-          type="text"
-          placeholder={placeholder}
-          id={name}
-          className={`py-1.5 text-sm px-3 font-medium tracking-tighter w-full text-slate-600 outline-none focus:outline-none ${className}`}
-          autoComplete="off"
-          {...register(name)}
-        />
-      </div>
+      <input
+        type={type}
+        placeholder={placeholder}
+        id={name}
+        className={`h-12 w-full rounded-lg border px-4 text-[15px] text-gray-800 transition duration-150 focus:border-[#0d59f2] focus:outline-none focus:ring-0 ${
+          errors[name] ? "border-red-500" : "border-gray-300"
+        } ${className ?? ""}`}
+        autoComplete="off"
+        {...register(name)}
+      />
     </div>
   );
 };

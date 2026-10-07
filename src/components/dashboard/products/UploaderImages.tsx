@@ -76,37 +76,54 @@ export const UploaderImages: FC<Props> = ({
         onChange={handleImageChange}
         accept="image/*"
         multiple={multiple}
-        className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold
-             file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200"
+        id="image-upload-input"
+        className="sr-only"
       />
 
-      <div className="grid grid-cols-4 lg:grid-cols-2 gap-4">
-        {images.map((image, index) => (
-          <div key={index}>
-            <div
-              className="border border-gray-200 w-full h-20 rounded-md p-1 relative 
-                     lg:h-28"
+      <div className="flex flex-wrap items-start gap-4">
+        {(multiple || images.length === 0) && (
+          <label
+            htmlFor="image-upload-input"
+            className="group flex h-36 w-36 cursor-pointer select-none flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-white transition-colors duration-150 hover:bg-gray-50/75"
+          >
+            <svg
+              aria-hidden="true"
+              className="mb-2 h-12 w-12 text-[#9ca3af] transition-colors duration-150 group-hover:text-gray-500"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
+              <path d="M4 5a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V7a2 2 0 00-2-2H4zm0 2h16v10H4V7zm3 2a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm10.5 7h-11l3.5-4.5 2.5 3 2.5-3 2.5 4.5z"></path>
+              <path d="M19 3H5a2 2 0 00-2 2h18a2 2 0 00-2-2z" opacity="0.4"></path>
+            </svg>
+            <span className="text-xs font-normal text-[#6b7280]">
+              image upload
+            </span>
+          </label>
+        )}
+
+        {images.map((image, index) => (
+          <div key={index} className="relative">
+            <div className="flex h-36 w-36 items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-white p-1.5">
               <img
                 src={image.previewUrl}
                 alt={`Preview ${index}`}
-                className="rounded-md w-full h-full object-contain "
+                className="h-full w-full rounded-lg object-contain"
               />
-
-              <button
-                type="button"
-                onClick={() => handleRemoveImage(index)}
-                className="flex justify-end absolute -top-3 -right-4
-                          hover:scale-110 transition-all z-10"
-              >
-                <IoIosCloseCircleOutline size={20} className="text-red-500" />
-              </button>
             </div>
+
+            <button
+              type="button"
+              onClick={() => handleRemoveImage(index)}
+              className="absolute -right-2 -top-2 z-10 transition-all hover:scale-110"
+            >
+              <IoIosCloseCircleOutline size={20} className="text-red-500" />
+            </button>
           </div>
         ))}
       </div>
       {errors?.images && (
-        <p className="text-red-500 text-xs mt-1">{errors.images.message}</p>
+        <p className="mt-1 text-xs text-red-500">{errors.images.message}</p>
       )}
     </>
   );
