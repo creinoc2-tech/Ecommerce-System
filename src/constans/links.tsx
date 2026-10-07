@@ -86,7 +86,11 @@ export const dashboardLinks = [
 		id: 1,
 		title: 'Productos',
 		href: '/dashboard/productos',
-		icon : <FaBoxOpen size={22} />
+		icon : <FaBoxOpen size={22} />,
+		children: [
+			{ title: 'Product List', href: '/dashboard/productos' },
+			{ title: 'Product Upload', href: '/dashboard/productos/new' },
+		],
 	 } ,
 
 	 {
@@ -100,6 +104,10 @@ export const dashboardLinks = [
 		id: 3,
 		title: 'Categorias',
 		href: '/dashboard/categorias',
-		icon : <FaTags size={22} />
+		icon : <FaTags size={22} />,
+		children: [
+			{ title: 'Category List', href: '/dashboard/categorias' },
+			{ title: 'Add Category', href: '/dashboard/categorias/new' },
+		],
 	 }
 ]
